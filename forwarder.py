@@ -17,7 +17,7 @@
 
 Please read the README. Usage:
 
-    forwarder.py <loopback-address> <dns-server-address> &
+    forwarder.py {--tls} <loopback-address> <dns-server-address> &
     
 The above will run the script in the background. dns-server-address should be one of your
 configured local caching resolvers (I don't recommend 8.8.8.8).
@@ -25,10 +25,14 @@ configured local caching resolvers (I don't recommend 8.8.8.8).
 After running the script edit your network settings and change your resolver to loopback-address.
 
 loopback-address will typically be 127.0.0.1 for IP4 or ::1 for IP6.
+
+Specifying "--tls" establishes the connection with TLS, contacting the server on
+port 853. (Also known as "DoT".)
 """
 
 import sys
 import asyncio
+import ssl
 
 class UDPListener(asyncio.DatagramProtocol):
     def connection_made(self, transport):
@@ -36,7 +40,7 @@ class UDPListener(asyncio.DatagramProtocol):
         return
     
     async def handle_request(self, request, addr):
-        reader, writer = await asyncio.open_connection(self.remote_address, 53)
+        reader, writer = await asyncio.open_connection(self.remote_address, self.ssl and 853 or 53, ssl=self.ssl)
         # NOTE: When using TCP the request and response are prepended with
         # the length of the request/response.
         writer.write(len(request).to_bytes(2, byteorder='big')+request)
@@ -53,9 +57,13 @@ class UDPListener(asyncio.DatagramProtocol):
 
 def main():
     try:
-        listen_address, remote_address = sys.argv[1:3]
+        tls = sys.argv[1] == '--tls'
+        if tls:
+            listen_address, remote_address = sys.argv[2:4]
+        else:
+            listen_address, remote_address = sys.argv[1:3]
     except:
-        print('Usage: forwarder.py <udp-listen-address> <remote-server-address>', file=sys.stderr)
+        print('Usage: forwarder.py {--tls} <udp-listen-address> <remote-server-address>', file=sys.stderr)
         sys.exit(1)
     event_loop = asyncio.get_event_loop()
     listener = event_loop.create_datagram_endpoint(UDPListener, local_addr=(listen_address, 53))
@@ -70,6 +78,10 @@ def main():
         
     service.remote_address = remote_address
     service.event_loop = event_loop
+    if tls:
+        service.ssl = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    else:
+        service.ssl = None
 
     try:
         event_loop.run_forever()
