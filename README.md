@@ -1,5 +1,7 @@
 # TCP-Only Forwarder
 
+___Now with healthy whole-grain TLS!___
+
 I posted an _Ask HN_ about this and it dropped like a lead zeppelin. So this is actual working code to prove the point.
 
 ### Are DNS over HTTP(s) (DoH) and DNS over TLS (DoT) faster because they use TCP?
@@ -42,7 +44,12 @@ tried it and I'm not likely to. If you're worried about _privacy_ then DoT/H sho
 
 This requires `python3`. If `python3` lives in `/usr/bin/` then yay! Otherwise:
 
-    python3 ./forwarder.py 127.0.0.1 <one-of-your-actual-resolvers> &
+    python3 ./forwarder.py {--tls} 127.0.0.1 <one-of-your-actual-resolvers> &
 
 Once you've done that, edit your network settings to refer to `127.0.0.1`. It should work with IP6 too, although I haven't
 tried it.
+
+##### TLS
+
+If you pass `--tls` as the first argument, it uses TLS and attempts to contact the server on port 853. This
+mode is also known as _DNS over TLS_ (DoT).
