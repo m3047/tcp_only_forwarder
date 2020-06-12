@@ -53,3 +53,5 @@ tried it.
 
 If you pass `--tls` as the first argument, it uses TLS and attempts to contact the server on port 853. This
 mode is also known as _DNS over TLS_ (DoT).
+
+The _BIND_ (https://www.isc.org/bind/) source tree includes instructions on configuring Nginx as a TLS proxy forwarder in the `contrib/dnspriv/` directory.
