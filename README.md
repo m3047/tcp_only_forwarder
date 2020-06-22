@@ -46,8 +46,9 @@ This requires `python3`. If `python3` lives in `/usr/bin/` then yay! Otherwise:
 
     python3 ./forwarder.py {--tls} 127.0.0.1 <one-of-your-actual-resolvers> &
 
-Once you've done that, edit your network settings to refer to `127.0.0.1`. It should work with IP6 too, although I haven't
-tried it.
+Once you've done that, edit your network settings and make one of the nameservers `127.0.0.1`. You don't have to remove
+the other nameserver entries unless you've reached the working limit (typically three). It should work with IP6 too,
+although I haven't tried it.
 
 ##### TLS
 
