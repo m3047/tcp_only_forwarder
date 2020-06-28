@@ -32,8 +32,16 @@ would succeed. Usually startlingly fast!
 
 ##### my question
 
-So my question to you is this: is it about time that _Apple_ and _Microsoft_ considered making DNS with TCP opportunistic, or
-in other words if UDP fails their stub resolvers try TCP?
+~~So my question to you is this: is it about time that _Apple_ and _Microsoft_ considered making DNS with TCP opportunistic, or
+in other words if UDP fails their stub resolvers try TCP?~~
+
+It turns out that _Apple_ is making moves in the direction of supporting DoT at the device level:
+
+* https://www.theregister.com/2020/06/27/apple_dns_macos_ios/
+
+_Microsoft_ has made DoH available to Windows insiders, but no word yet on DoT.
+
+It's not clear from either vendor whether this is (or will be) selectable at the level of individual nameservers.
 
 Please leave your experiences and thoughts in the feedback issue.
 
