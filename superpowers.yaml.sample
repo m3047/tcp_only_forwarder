@@ -1,0 +1,19 @@
+---
+# YAML config for the superpowers DNS forwarder.
+# The provided superpowers are capable of synthesizing
+# in-addr.arpa PTR responses from:
+# * sqlite -- a sqlite database
+# * shodohflo -- a redis database which is being updated by ShoDoHFlo
+params:
+  sqlite: { db: 'superpowers.db' }
+  shodohflo: { redis_server: 'sophia.m3047' }
+subnets:
+  - powers:
+    nets:
+      - 10.0.0.128/25   never   office-routable
+      - 10.0.0.0/25     never   office-norouting
+      - net:  10.0.1.0/24
+        mode: never
+        fqdn: media-network
+      - 10.0.0.0/23     never   locally-assigned
+
