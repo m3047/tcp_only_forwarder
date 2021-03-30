@@ -69,4 +69,4 @@ The _BIND_ (https://www.isc.org/bind/) source tree includes instructions on conf
 
 `route -n`, `iptables -n`, `everything -n`: why is that? Why is PTR lookup so useless I reflexively use `-n`? I'm trying to fix that.
 
-So if you're like me and you which reverse lookup were more useful, checkout [Superpowers.md](https://github.com/m3047/tcp_only_forwarder/blob/master/Superpowers.md)
+So if you're like me and you wish reverse lookups were more useful, checkout [Superpowers.md](https://github.com/m3047/tcp_only_forwarder/blob/master/Superpowers.md)
