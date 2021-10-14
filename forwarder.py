@@ -45,8 +45,14 @@ class UDPListener(asyncio.DatagramProtocol):
         # the length of the request/response.
         writer.write(len(request).to_bytes(2, byteorder='big')+request)
         await writer.drain()
-        response_length = await reader.read(2)
-        response = await reader.read(int.from_bytes(response_length, byteorder='big'))
+        response_length = int.from_bytes(await reader.read(2), byteorder='big')
+        response = b''
+        while response_length:
+            resp = await reader.read(response_length)
+            if not len(resp):
+                break
+            response += resp
+            response_length -= len(resp)
         writer.close()
         self.transport.sendto(response, addr)
         return
