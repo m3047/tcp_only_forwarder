@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Copyright (c) 2020 by Fred Morris Tacoma WA
+# Copyright (c) 2020,2023 by Fred Morris Tacoma WA
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,9 +37,11 @@ import ssl
 class UDPListener(asyncio.DatagramProtocol):
     def connection_made(self, transport):
         self.transport = transport
+        if not hasattr(self, 'requests'):
+            self.requests = set()
         return
     
-    async def handle_request(self, request, addr):
+    async def handle_request(self, request, addr, task_promise):
         reader, writer = await asyncio.open_connection(self.remote_address, self.ssl and 853 or 53, ssl=self.ssl)
         # NOTE: When using TCP the request and response are prepended with
         # the length of the request/response.
@@ -55,10 +57,14 @@ class UDPListener(asyncio.DatagramProtocol):
             response_length -= len(resp)
         writer.close()
         self.transport.sendto(response, addr)
+        self.requests.remove(task_promise[0])
         return
 
     def datagram_received(self, request, addr):
-        self.event_loop.create_task(self.handle_request(request,addr))
+        promise = []
+        task = self.event_loop.create_task( self.handle_request( request, addr, promise ) )
+        promise.append(task)
+        self.requests.add(task)
         return
 
 def main():
